@@ -1,0 +1,15 @@
+=== Mapping Validation Issues ===
+- Low confidence mapping: Suspense - Unmapped -> FX Gain/Loss - Unrealized (45.45454545454546)
+- Unmapped account: Suspense - Unmapped
+
+=== Adjustment Validation Issues ===
+- JE-002 is unbalanced: Debit=28500.0, Credit=25000.0
+
+=== LLM Reasoning Layer ===
+
+Account: Suspense - Unmapped
+**Account Analysis: Suspense - Unmapped**
+
+1. **Most likely accounting category**: Current Assets or Current Liabilities, as suspense accounts are often used to temporarily hold unclassified or unclear transactions.
+2. **Uncertainty reason**: The account name "Suspense - Unmapped" indicates that the transaction or account balance cannot be confidently assigned to a specific account in the chart of accounts, likely due to insufficient information or unclear transaction details.
+3. **Human review required**: Yes, human review is necessary to investigate and resolve the uncertainty, ensuring accurate accounting treatment and proper classification of the transaction or account balance.
