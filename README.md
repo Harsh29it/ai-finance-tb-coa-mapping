@@ -1,4 +1,3 @@
-1. Project Title
 # AI-Powered TB → COA Mapping & Validation System
 
 2. Overview
