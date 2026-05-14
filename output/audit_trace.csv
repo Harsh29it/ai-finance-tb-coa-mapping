@@ -1,0 +1,63 @@
+tb_account,matched_coa,confidence_score,source_file,validation_status
+Cash and Cash Equivalents,Cash and Cash Equivalents,100.0,trial_balance.csv,Auto Approved
+Cash and Cash Equivalents,Cash and Cash Equivalents,100.0,trial_balance.csv,Auto Approved
+Cash and Cash Equivalents,Cash and Cash Equivalents,100.0,trial_balance.csv,Auto Approved
+Accounts Receivable,Accounts Receivable,100.0,trial_balance.csv,Auto Approved
+Allowance for Doubtful Accounts,Allowance for Doubtful Accounts,100.0,trial_balance.csv,Auto Approved
+Inventory - Raw Materials,Inventory - Raw Materials,100.0,trial_balance.csv,Auto Approved
+Inventory - Finished Goods,Inventory - Finished Goods,100.0,trial_balance.csv,Auto Approved
+Prepaid Expenses,Prepaid Expenses,100.0,trial_balance.csv,Auto Approved
+Other Current Assets,Other Current Assets,100.0,trial_balance.csv,Auto Approved
+"Property, Plant & Equipment - Cost","Property, Plant & Equipment - Cost",100.0,trial_balance.csv,Auto Approved
+Accumulated Depreciation - PPE,Accumulated Depreciation - PPE,100.0,trial_balance.csv,Auto Approved
+Intangible Assets - Cost,Intangible Assets - Cost,100.0,trial_balance.csv,Auto Approved
+Accumulated Amortization,Accumulated Amortization,100.0,trial_balance.csv,Auto Approved
+Goodwill,Goodwill,100.0,trial_balance.csv,Auto Approved
+Long-term Investments,Long-term Investments,100.0,trial_balance.csv,Auto Approved
+Deferred Tax Asset,Deferred Tax Asset,100.0,trial_balance.csv,Auto Approved
+Accounts Payable,Accounts Payable,100.0,trial_balance.csv,Auto Approved
+Accrued Expenses,Accrued Expenses,100.0,trial_balance.csv,Auto Approved
+Short-term Debt,Short-term Debt,100.0,trial_balance.csv,Auto Approved
+Current Portion of Long-term Debt,Current Portion of Long-term Debt,100.0,trial_balance.csv,Auto Approved
+Income Tax Payable,Income Tax Payable,100.0,trial_balance.csv,Auto Approved
+Deferred Revenue,Deferred Revenue,100.0,trial_balance.csv,Auto Approved
+Intercompany Payable,Intercompany Payable,100.0,trial_balance.csv,Auto Approved
+Long-term Debt,Long-term Debt,100.0,trial_balance.csv,Auto Approved
+Lease Liability - Long-term,Lease Liability - Long-term,100.0,trial_balance.csv,Auto Approved
+Deferred Tax Liability,Deferred Tax Liability,100.0,trial_balance.csv,Auto Approved
+Pension Obligations,Pension Obligations,100.0,trial_balance.csv,Auto Approved
+Common Stock,Common Stock,100.0,trial_balance.csv,Auto Approved
+Additional Paid-in Capital,Additional Paid-in Capital,100.0,trial_balance.csv,Auto Approved
+Retained Earnings,Retained Earnings,100.0,trial_balance.csv,Auto Approved
+FX Translation Reserve,FX Translation Reserve,100.0,trial_balance.csv,Auto Approved
+Treasury Stock,Treasury Stock,100.0,trial_balance.csv,Auto Approved
+Product Revenue,Product Revenue,100.0,trial_balance.csv,Auto Approved
+Service Revenue,Service Revenue,100.0,trial_balance.csv,Auto Approved
+Sales Returns and Allowances,Sales Returns and Allowances,100.0,trial_balance.csv,Auto Approved
+Other Operating Revenue,Other Operating Revenue,100.0,trial_balance.csv,Auto Approved
+COGS - Materials,COGS - Materials,100.0,trial_balance.csv,Auto Approved
+COGS - Direct Labor,COGS - Direct Labor,100.0,trial_balance.csv,Auto Approved
+COGS - Manufacturing Overhead,COGS - Manufacturing Overhead,100.0,trial_balance.csv,Auto Approved
+Salaries and Wages,Salaries and Wages,100.0,trial_balance.csv,Auto Approved
+Employee Benefits,Employee Benefits,100.0,trial_balance.csv,Auto Approved
+Payroll Taxes,Payroll Taxes,100.0,trial_balance.csv,Auto Approved
+Rent Expense,Rent Expense,100.0,trial_balance.csv,Auto Approved
+Utilities,Utilities,100.0,trial_balance.csv,Auto Approved
+Office Supplies,Office Supplies,100.0,trial_balance.csv,Auto Approved
+Marketing and Advertising,Marketing and Advertising,100.0,trial_balance.csv,Auto Approved
+Travel and Entertainment,Travel and Entertainment,100.0,trial_balance.csv,Auto Approved
+Travel and Entertainment,Travel and Entertainment,100.0,trial_balance.csv,Auto Approved
+Professional Fees,Professional Fees,100.0,trial_balance.csv,Auto Approved
+Insurance,Insurance,100.0,trial_balance.csv,Auto Approved
+Depreciation Expense,Depreciation Expense,100.0,trial_balance.csv,Auto Approved
+Amortization Expense,Amortization Expense,100.0,trial_balance.csv,Auto Approved
+Bad Debt Expense,Bad Debt Expense,100.0,trial_balance.csv,Auto Approved
+Other Operating Expenses,Other Operating Expenses,100.0,trial_balance.csv,Auto Approved
+Interest Income,Interest Income,100.0,trial_balance.csv,Auto Approved
+Interest Expense,Interest Expense,100.0,trial_balance.csv,Auto Approved
+FX Gain/Loss - Realized,FX Gain/Loss - Realized,100.0,trial_balance.csv,Auto Approved
+FX Gain/Loss - Unrealized,FX Gain/Loss - Unrealized,100.0,trial_balance.csv,Auto Approved
+Gain/Loss on Disposal of Assets,Gain/Loss on Disposal of Assets,100.0,trial_balance.csv,Auto Approved
+Current Tax Expense,Current Tax Expense,100.0,trial_balance.csv,Auto Approved
+Deferred Tax Expense,Deferred Tax Expense,100.0,trial_balance.csv,Auto Approved
+Suspense - Unmapped,FX Gain/Loss - Unrealized,45.45454545454546,trial_balance.csv,Unmapped

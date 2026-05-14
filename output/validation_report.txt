@@ -5,11 +5,20 @@
 === Adjustment Validation Issues ===
 - JE-002 is unbalanced: Debit=28500.0, Credit=25000.0
 
+=== Self-Correction Check ===
+Validation failures detected. Workflow escalated for human review.
+- Low confidence mapping: Suspense - Unmapped -> FX Gain/Loss - Unrealized (45.45454545454546)
+- Unmapped account: Suspense - Unmapped
+- JE-002 is unbalanced: Debit=28500.0, Credit=25000.0
+
 === LLM Reasoning Layer ===
 
 Account: Suspense - Unmapped
-**Account Analysis: Suspense - Unmapped**
+1. Most likely accounting category: Current Assets or Current Liabilities (temporary holding account)
+2. Uncertain mapping due to lack of descriptive information and unclear transaction nature
+3. Yes, human review is required to determine the correct account mapping and resolve the suspense account.
 
-1. **Most likely accounting category**: Current Assets or Current Liabilities, as suspense accounts are often used to temporarily hold unclassified or unclear transactions.
-2. **Uncertainty reason**: The account name "Suspense - Unmapped" indicates that the transaction or account balance cannot be confidently assigned to a specific account in the chart of accounts, likely due to insufficient information or unclear transaction details.
-3. **Human review required**: Yes, human review is necessary to investigate and resolve the uncertainty, ensuring accurate accounting treatment and proper classification of the transaction or account balance.
+=== Audit Traceability Output ===
+Audit trace file generated successfully.
+File: output/audit_trace.csv
+Contains traceable TB to COA mapping records with confidence scores and validation status.

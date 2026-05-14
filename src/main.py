@@ -68,6 +68,33 @@ mapped_df = map_accounts(tb, coa)
 print("\n=== Account Mapping Results ===")
 print(mapped_df.head(10))
 
+
+# =========================
+# Audit Traceability Output
+# =========================
+
+mapped_df["source_file"] = "trial_balance.csv"
+
+mapped_df["validation_status"] = mapped_df["status"]
+
+traceability_df = mapped_df[
+    [
+        "tb_account",
+        "matched_coa",
+        "confidence_score",
+        "source_file",
+        "validation_status"
+    ]
+]
+
+traceability_df.to_csv(
+    "output/audit_trace.csv",
+    index=False
+)
+
+print("\n=== Audit Traceability File Generated ===")
+print(traceability_df.head())
+
 # from validator.py
 issues = validate_mappings(mapped_df)
 
@@ -90,6 +117,37 @@ if len(adjustment_issues) == 0:
 else:
     for issue in adjustment_issues:
         print("-", issue)
+
+
+
+# =========================
+# Self-Correction / Escalation Layer
+# =========================
+
+critical_failures = []
+
+# Collect mapping validation failures
+if len(issues) > 0:
+    critical_failures.extend(issues)
+
+# Collect journal adjustment failures
+if len(adjustment_issues) > 0:
+    critical_failures.extend(adjustment_issues)
+
+print("\n=== Self-Correction Check ===")
+
+if len(critical_failures) == 0:
+
+    print("All validation checks passed.")
+    print("Workflow approved for downstream reporting.")
+
+else:
+
+    print("Validation failures detected.")
+    print("Escalating workflow for human review.")
+
+    for failure in critical_failures:
+        print("-", failure)
 
 
 print("\n=== LLM Reasoning Layer ===")
@@ -127,6 +185,26 @@ with open("output/validation_report.txt", "w") as f:
     else:
         for issue in adjustment_issues:
             f.write(f"- {issue}\n")
+    
+    # Self-correction / escalation layer
+    f.write("\n=== Self-Correction Check ===\n")
+
+    if len(critical_failures) == 0:
+
+        f.write(
+            "All validation checks passed. "
+            "Workflow approved for downstream reporting.\n"
+        )
+
+    else:
+
+        f.write(
+            "Validation failures detected. "
+            "Workflow escalated for human review.\n"
+        )
+
+        for failure in critical_failures:
+            f.write(f"- {failure}\n")
 
     # LLM reasoning layer
     f.write("\n=== LLM Reasoning Layer ===\n")
@@ -142,5 +220,14 @@ with open("output/validation_report.txt", "w") as f:
             f.write(f"\nAccount: {row['tb_account']}\n")
             f.write(reasoning)
             f.write("\n")
+
+    # Audit traceability output
+    f.write("\n=== Audit Traceability Output ===\n")
+    f.write("Audit trace file generated successfully.\n")
+    f.write("File: output/audit_trace.csv\n")
+    f.write(
+        "Contains traceable TB to COA mapping records "
+        "with confidence scores and validation status.\n"
+    )
 
 print("\nValidation report saved.")

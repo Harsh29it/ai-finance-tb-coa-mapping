@@ -142,24 +142,26 @@ Why an LLM is Used Here
 
 Semantic ambiguity is difficult to solve using rule-based systems alone. The LLM layer improves explainability and supports human reviewers during reconciliation workflows.
 
-# 5. AI vs Deterministic Logic
 
-The system intentionally separates deterministic accounting operations from probabilistic AI reasoning.
+#5 Deterministic vs LLM Boundary
 
-Deterministic Logic Used For
-Arithmetic calculations
-Debit/Credit balancing
-Trial Balance validation
-Duplicate detection
-Confidence scoring
-Exact/fuzzy matching
-LLM Reasoning Used For
-Ambiguous account interpretation
-Semantic classification
-Human-readable explanations
-Review recommendations
+The workflow intentionally separates deterministic financial controls from probabilistic AI reasoning.
 
-This separation reduces hallucination risk and improves financial reliability.
+Deterministic validation layers are responsible for:
+- debit-credit balancing
+- journal validation
+- confidence threshold enforcement
+- mapping approval checks
+- audit trace generation
+
+LLM-based reasoning is used only for:
+- semantic interpretation of ambiguous account names
+- explaining low-confidence mappings
+- generating human-readable escalation context
+
+LLMs are intentionally excluded from arithmetic validation and financial calculations because probabilistic outputs are unsuitable for deterministic accounting controls.
+
+This boundary ensures the workflow remains auditable, explainable, and reliable for finance operations.
 
 LLM outputs are never directly trusted for accounting arithmetic or financial statement generation.
 # 6. Failure Handling Strategy
