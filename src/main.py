@@ -69,9 +69,7 @@ print("\n=== Account Mapping Results ===")
 print(mapped_df.head(10))
 
 
-# =========================
 # Audit Traceability Output
-# =========================
 
 mapped_df["source_file"] = "trial_balance.csv"
 
@@ -120,9 +118,7 @@ else:
 
 
 
-# =========================
 # Self-Correction / Escalation Layer
-# =========================
 
 critical_failures = []
 
@@ -206,7 +202,7 @@ with open("output/validation_report.txt", "w") as f:
         for failure in critical_failures:
             f.write(f"- {failure}\n")
 
-    # LLM reasoning layer
+    # LLM reasoning 
     f.write("\n=== LLM Reasoning Layer ===\n")
 
     for _, row in mapped_df.iterrows():
