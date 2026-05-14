@@ -1,240 +1,367 @@
-# Architecture Document  
-## AI-Powered TB → COA Mapping & Validation System
+# Architecture Document
+
+# AI-Powered TB → COA Mapping & Validation System
 
 ---
 
-# 1. Problem Overview
+# 1. Introduction
 
-Enterprise financial reporting systems often receive accounting data from multiple ERP exports, spreadsheets, and manual journal adjustments. While the arithmetic involved in financial reporting is deterministic, the data itself is frequently inconsistent, incomplete, or poorly classified.
+This project is a finance workflow automation prototype designed to solve the Trial Balance (TB) to Chart of Accounts (COA) mapping problem using a hybrid architecture that combines deterministic accounting controls with AI-assisted reasoning.
 
-One of the most common challenges in financial close processes is mapping Trial Balance (TB) accounts to a standardized Chart of Accounts (COA). This becomes difficult when account names differ across systems, temporary suspense accounts exist, or manual adjustments are entered inconsistently.
+The primary objective of the system is to:
 
-The objective of this system is to automate the TB → COA mapping process while maintaining auditability, validation controls, and human oversight for uncertain cases.
+* automate account mapping
+* detect validation failures
+* maintain auditability
+* provide explainable outputs
+* escalate ambiguous cases for human review
 
-The system intentionally combines deterministic accounting logic with AI-assisted semantic reasoning instead of relying entirely on an LLM.
+The workflow is intentionally validation-first and designed to simulate production-aware finance operations where reliability, traceability, and control mechanisms are critical.
 
 ---
 
-# 2. System Objectives
+# 2. Problem Statement
 
-The proposed system is designed to:
+Financial systems frequently receive messy Trial Balance datasets containing:
 
-- Load and validate accounting datasets
-- Detect inconsistencies in financial data
-- Map Trial Balance accounts to Chart of Accounts categories
-- Generate confidence scores for mappings
-- Escalate uncertain mappings for human review
-- Use LLM reasoning only for ambiguous classification tasks
-- Produce audit-friendly validation reports
+* inconsistent account naming
+* unmapped accounts
+* duplicate semantics
+* adjustment errors
+* incomplete metadata
+* ambiguous classifications
 
-The architecture prioritizes reliability, traceability, and controlled automation over fully autonomous decision-making.
+A fully deterministic rules-based system struggles with semantic ambiguity, while a fully LLM-driven system introduces unacceptable reliability and auditability risks.
+
+The challenge is to design a workflow that:
+
+* leverages AI where semantic reasoning is useful
+* preserves deterministic validation for accounting controls
+* supports audit traceability
+* enables human-in-the-loop escalation
 
 ---
 
 # 3. System Architecture
 
-```text
+The system follows a modular single-orchestrator workflow architecture.
+
+```text id="arc1"
 Input Files
     ↓
 Data Loader
     ↓
 Validation Layer
     ↓
-TB → COA Mapping Agent
+TB → COA Mapping Engine
     ↓
 Confidence Scoring
     ↓
-LLM Reasoning Layer (Groq)
+Self-Correction / Escalation Layer
     ↓
-Human Review Queue
+LLM Reasoning Layer
     ↓
-Output Reports
+Audit Trace Generator
+    ↓
+Validation Report Generator
 ```
 
-# 4. System Components
+---
+
+# 4. Architecture Components
 
 ## 4.1 Data Loader
 
-The Data Loader is responsible for ingesting structured accounting datasets from CSV and JSON sources.
+File: `loader.py`
 
-Inputs
-Trial Balance
-Chart of Accounts
-Prior Period Trial Balance
-FX Rates
-Manual Journal Adjustments
-Responsibilities
-Read CSV and JSON files
-Normalize column structures
-Convert data into pandas DataFrames
-Prepare datasets for downstream validation
+Responsibilities:
 
-This layer acts as the system’s ingestion boundary.
+* load TB dataset
+* load COA dataset
+* load prior-period TB
+* load FX rates
+* load manual adjustments
 
-## 4.2 Validation Layer
+Supported formats:
 
-The Validation Layer performs deterministic accounting checks before any AI-assisted processing occurs.
+* CSV
+* JSON
 
-Validation Checks
-Missing values
-Duplicate accounts
-Missing COA mappings
-Trial Balance imbalance detection
-Invalid journal entries
-Missing FX data
-Example Findings
-Suspense accounts not mapped to COA
-Journal entries where debit ≠ credit
-Missing metadata fields
+The loader layer isolates ingestion logic from business logic to improve maintainability and extensibility.
 
-This layer prevents invalid accounting data from propagating further into the workflow.
+---
 
-## 4.3 TB → COA Mapping Agent
+# 4.2 Validation Layer
 
-The Mapping Agent performs account classification between Trial Balance accounts and the Chart of Accounts hierarchy.
+File: `validator.py`
 
-Mapping Strategy
+The validation layer performs deterministic financial controls before downstream processing.
 
-The prototype uses:
+Validation checks include:
 
-Exact matching
-Fuzzy string similarity matching using RapidFuzz
-Example
-"Sales Rev" → "Sales Revenue"
-Outputs
-Suggested COA account
-Account type
-Confidence score
-Approval status
+* missing value detection
+* duplicate account checks
+* debit-credit imbalance detection
+* missing COA mappings
+* journal entry balance validation
+* FX data completeness checks
 
-The mapping logic is deterministic and reproducible.
+This layer acts as the first reliability boundary in the workflow.
 
-## 4.4 Confidence Scoring
+---
 
-Each mapping is assigned a confidence score based on string similarity.
+# 4.3 TB → COA Mapping Engine
 
-Confidence Thresholds
-Score Range	Action
-90–100	Auto Approved
-70–89	Needs Review
-Below 70	Unmapped
+File: `mapper.py`
 
-This layer acts as a safety boundary before AI reasoning is invoked.
+The mapping engine performs semantic account matching between Trial Balance accounts and standardized COA accounts.
 
-## 4.5 LLM Reasoning Layer
+The workflow uses:
 
-The system integrates Groq-hosted LLM inference for semantic reasoning in low-confidence scenarios.
+* fuzzy string matching
+* confidence scoring
+* threshold-based approval logic
 
-The LLM is intentionally isolated behind confidence thresholds and is not used for deterministic accounting operations.
+Mapping outputs include:
 
-LLM Responsibilities
-Explain ambiguous mappings
-Suggest likely accounting categories
-Generate human-readable reasoning
-Recommend whether human review is required
-Example
-Account: Suspense - Unmapped
+* matched COA account
+* account type
+* confidence score
+* approval status
 
-Reasoning:
-The account appears to represent temporary unresolved transactions
-and cannot be confidently classified without manual review.
-Why an LLM is Used Here
+Example statuses:
 
-Semantic ambiguity is difficult to solve using rule-based systems alone. The LLM layer improves explainability and supports human reviewers during reconciliation workflows.
+* Auto Approved
+* Needs Review
+* Unmapped
 
+---
 
-#5 Deterministic vs LLM Boundary
+# 4.4 Confidence Scoring
 
-The workflow intentionally separates deterministic financial controls from probabilistic AI reasoning.
+The system assigns confidence scores to each account mapping.
 
-Deterministic validation layers are responsible for:
-- debit-credit balancing
-- journal validation
-- confidence threshold enforcement
-- mapping approval checks
-- audit trace generation
+High-confidence mappings are automatically approved.
 
-LLM-based reasoning is used only for:
-- semantic interpretation of ambiguous account names
-- explaining low-confidence mappings
-- generating human-readable escalation context
+Low-confidence mappings trigger:
 
-LLMs are intentionally excluded from arithmetic validation and financial calculations because probabilistic outputs are unsuitable for deterministic accounting controls.
+* validation flags
+* escalation workflows
+* LLM-assisted reasoning
 
-This boundary ensures the workflow remains auditable, explainable, and reliable for finance operations.
+This reduces the risk of silent financial misclassification.
 
-LLM outputs are never directly trusted for accounting arithmetic or financial statement generation.
-# 6. Failure Handling Strategy
+---
 
-The architecture is designed to fail safely rather than silently producing unreliable outputs.
+# 4.5 Self-Correction & Escalation Layer
 
-Failure Scenarios
-Missing COA mappings
-Low-confidence matches
-Suspense accounts
-Unbalanced journal entries
-Missing FX rates
-Invalid adjustment entries
-Handling Approach
-Log issue
-Flag for validation
-Escalate to human review
-Prevent automatic approval
+The workflow includes a self-correction validation gate.
 
-Uncertain cases are intentionally routed to manual review workflows.
+Before final outputs are generated, the system evaluates:
 
-# 7. Human Review Queue
+* mapping validation failures
+* journal balance violations
+* unmapped accounts
+* low-confidence mappings
 
-The Human Review Queue acts as a control layer for mappings that cannot be safely automated.
+If validation failures exist:
 
-Review Triggers
-Confidence score below threshold
-Unmapped accounts
-Suspense accounts
-Validation failures
+* the workflow escalates for human review
+* approval is withheld
+* issues are included in audit reports
 
-This design reflects real-world financial control processes where material accounting decisions require oversight.
+This simulates production-grade financial control workflows.
 
-# 8. Auditability & Traceability
+---
 
-Auditability is a core design principle of the system.
+# 4.6 LLM Reasoning Layer
 
-Every mapping decision is logged with:
+File: `llm_reasoning.py`
 
-Source TB account
-Suggested COA mapping
-Confidence score
-Validation status
-LLM-generated reasoning
+The LLM layer uses Groq-hosted language models to generate:
 
-The system also generates:
+* semantic interpretation
+* ambiguity explanations
+* human-readable escalation context
 
-Mapping output reports
-Validation reports
-Adjustment validation summaries
+LLM reasoning is intentionally limited to:
 
-Persisting AI-generated explanations alongside validation findings improves traceability during financial reviews.
+* low-confidence mappings
+* ambiguous account interpretation
+* explanation generation
 
-# 9. Scalability Considerations
+The system avoids using LLMs for:
 
-Although the prototype focuses on a single workflow slice, the architecture is designed for future scalability.
+* arithmetic validation
+* journal balancing
+* financial calculations
+* deterministic accounting logic
 
-Potential future enhancements include:
+This boundary is critical for maintaining reliability and auditability.
 
-Multi-entity ERP support
-Vector embedding search for semantic mapping
-RAG-based accounting memory
-LangGraph orchestration
-Async validation pipelines
-Workflow approval dashboards
-ERP integrations
+---
 
-The modular design allows individual agents to scale independently.
+# 5. Deterministic vs LLM Boundary
 
-# 10. Conclusion
+The architecture intentionally separates deterministic financial controls from probabilistic AI reasoning.
 
-This prototype demonstrates a hybrid finance AI architecture that combines deterministic accounting controls with targeted LLM-assisted reasoning.
+## Deterministic Components
 
-Rather than replacing accounting controls with AI, the system uses AI selectively for semantic interpretation while preserving validation, auditability, and human oversight.
+Handled through code-based validation:
 
-The result is a safer and more production-aligned approach to financial workflow automation.
+* debit-credit balancing
+* adjustment validation
+* confidence threshold checks
+* mapping approvals
+* traceability generation
+* workflow escalation
+
+## LLM Components
+
+Handled through AI reasoning:
+
+* semantic ambiguity interpretation
+* account explanation generation
+* escalation context
+* human-readable summaries
+
+LLMs are intentionally excluded from arithmetic validation because probabilistic outputs are unsuitable for deterministic accounting controls.
+
+This hybrid boundary improves:
+
+* explainability
+* reliability
+* auditability
+* operational trust
+
+---
+
+# 6. Audit Traceability Design
+
+The workflow generates audit trace outputs for every mapping.
+
+Generated file:
+
+```text id="arc2"
+output/audit_trace.csv
+```
+
+Traceability includes:
+
+* source account
+* matched COA account
+* confidence score
+* validation status
+* source file lineage
+
+This allows auditors to trace outputs back to originating source rows.
+
+---
+
+# 7. Validation & Failure Handling
+
+The system is designed to explicitly handle production failure scenarios.
+
+Examples:
+
+* unmapped accounts
+* ambiguous mappings
+* debit-credit mismatches
+* missing FX data
+* invalid journal entries
+
+Failure handling workflow:
+
+1. detect issue
+2. block auto-approval
+3. escalate for human review
+4. generate explanation
+5. include issue in validation report
+
+This prevents silent propagation of financial errors.
+
+---
+
+# 8. Human-in-the-Loop Design
+
+The workflow intentionally supports human override and review.
+
+Cases escalated to humans:
+
+* low-confidence mappings
+* ambiguous semantics
+* invalid adjustments
+* unresolved accounts
+
+The objective is not full automation, but controlled automation with governance.
+
+---
+
+# 9. Why a Hybrid Architecture Was Chosen
+
+A fully deterministic workflow cannot reliably handle semantic ambiguity in messy financial data.
+
+A fully LLM-driven workflow introduces:
+
+* hallucination risk
+* non-deterministic outputs
+* weak auditability
+* poor financial reliability
+
+The hybrid approach balances:
+
+* deterministic controls
+* AI-assisted interpretation
+* operational explainability
+* financial governance
+
+---
+
+# 10. Current Limitations
+
+The current prototype has several limitations:
+
+* no ERP integration
+* no persistent database
+* limited FX remediation
+* no multi-entity consolidation
+* no orchestration framework
+* limited scalability testing
+* no real-time approval workflows
+
+The system is designed as a workflow prototype rather than a production deployment.
+
+---
+
+# 11. Future Improvements
+
+With additional development time, the following improvements would be implemented:
+
+* vector embeddings for semantic account matching
+* RAG-based accounting policy retrieval
+* LangGraph orchestration
+* approval workflow engine
+* dashboard visualizations
+* database persistence
+* retry orchestration
+* multi-entity consolidation
+* ERP/API integrations
+* automated reconciliation workflows
+
+---
+
+# 12. Conclusion
+
+This project demonstrates a validation-first finance workflow architecture that combines deterministic accounting controls with AI-assisted reasoning.
+
+The system prioritizes:
+
+* reliability
+* explainability
+* auditability
+* traceability
+* human oversight
+
+rather than attempting unsafe full automation.
+
+The architecture was intentionally designed to reflect how AI systems should operate in high-trust financial environments where deterministic correctness and operational governance are essential.
